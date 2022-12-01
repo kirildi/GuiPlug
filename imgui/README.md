@@ -6,3 +6,4 @@ And copy/replace them here.(probably follow the folder structure, otherwise you'
 
 If you want to use different backends and renderers,
 check ["Dear Imgui" docs/wiki](https://github.com/ocornut/imgui/wiki), for detailed explanation on how to do that.
+Currently I'm **not** planing to support other than those mentioned above.
