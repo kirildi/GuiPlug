@@ -3,9 +3,7 @@
 /release
 *.svg
 imgui.ini
-/dependencies/skia/*
-/dependencies/skia_b
-/dependencies/skia_st
+/dependencies/skia/skia_master
 /TODO.md
 
 

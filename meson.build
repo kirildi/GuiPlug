@@ -16,34 +16,35 @@ include=include_directories(
       'resources/',
       'resources/fonts/',
       'dependencies/',
-      'dependencies/skia/',
-      'dependencies/skia/include/',
-      'dependencies/skia/include/core/',
-      'dependencies/skia/include/effects/',
-      'dependencies/skia/include/gpu/',
-      'dependencies/skia/include/private/',
-      'dependencies/skia/include/config/',
-      'dependencies/skia/src/',
-      'dependencies/skia/src/core/',
-      'dependencies/skia/src/ports/',
-      'dependencies/skia/src/images/',
-      'dependencies/skia/src/gpu/',
-      'dependencies/skia/modules/',
-      'dependencies/skia/third_party/',
+      'dependencies/skia/skia_master/skia',
+      'dependencies/skia/skia_master/skia/include/',
+      'dependencies/skia/skia_master/skia/include/core/',
+      'dependencies/skia/skia_master/skia/include/effects/',
+      'dependencies/skia/skia_master/skia/include/gpu/',
+      'dependencies/skia/skia_master/skia/include/private/',
+      'dependencies/skia/skia_master/skia/include/config/',
+      'dependencies/skia/skia_master/skia/src/',
+      'dependencies/skia/skia_master/skia/src/core/',
+      'dependencies/skia/skia_master/skia/src/ports/',
+      'dependencies/skia/skia_master/skia/src/images/',
+      'dependencies/skia/skia_master/skia/src/gpu/',
+      'dependencies/skia/skia_master/skia/modules/',
+      'dependencies/skia/skia_master/skia/third_party/',
       'lib/',
       'lib/nlohmann/',
       'C:/msys64/mingw64/include/GL/',
  
       )
 
-add_project_link_arguments( 
+add_project_link_arguments(
+      '-L '+ source_dir+'/dependencies/skia/skia_master/skia/out/Static', 
       '-luuid',         
       '-lucrt',        
       '-lopengl32',
 	'-lskia',
       '-lparticles',
       '-lpathkit',
-      # '-lskottie',
+      '-lskottie',
       '-lskparagraph',
       '-lskresources',
       '-lskshaper',
@@ -71,13 +72,13 @@ src=[
       'imgui/imgui_demo.cpp',
       'imgui/backends/imgui_impl_glfw.cpp',
       'imgui/renderers/imgui_impl_opengl3.cpp',
-      'dependencies/skia/src/core/SkImageInfo.cpp'
+      'dependencies/skia/skia_master/skia/src/core/SkImageInfo.cpp'
       ]
 
 # Additional precompiled libs
 libs += compiller.find_library('libglfw3dll', dirs : source_dir+'/lib')
-libs += compiller.find_library('skia', dirs : source_dir+'/dependencies/skia_b')
-# libs += compiller.find_library('skia.dll', dirs : source_dir+'/dependencies/skia_b')
+libs += compiller.find_library('skia', dirs : source_dir+'/dependencies/skia/skia_master/skia/out/Static')
+ 
 # libs += compiller.find_library('skparagraph', dirs : source_dir+'/dependencies/skia_b')
 # libs += compiller.find_library('skparagraph.dll', dirs : source_dir+'/dependencies/skia_b')
 # libs += compiller.find_library('skshaper', dirs : source_dir+'/dependencies/skia_b')
@@ -102,7 +103,6 @@ libs += compiller.find_library('skia', dirs : source_dir+'/dependencies/skia_b')
 
 executable('a',
            'main.cpp',
-           #cpp_args: '-DSK_GL',
            include_directories : include,
            sources : src,
            dependencies : libs,
