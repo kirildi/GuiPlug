@@ -19,26 +19,16 @@ namespace GUIPLUG
 
             ~MainWindow()
             {
-                  ImGui_ImplOpenGL3_Shutdown();
-                  ImGui_ImplGlfw_Shutdown();
             }
 
             std::string openProjectPath{""};
 
             void placeContent(ImGuiViewport *viewPort, ImFont &mainFont24px)
             {
-                  // Start the Dear ImGui frame
-                  ImGui_ImplOpenGL3_NewFrame();
-                  ImGui_ImplGlfw_NewFrame();
-
-                  // skiaHandler.draw(500, 500);
-                  ImGui::NewFrame();
-
-                  // ImGui::DockSpaceOverViewport(viewPort);
                   mainFont24px.FontSize = 22.0F;
                   ImGui::PushFont(&mainFont24px);
-                  // placeHeader();
-                  // placeEditor(viewPort);
+                  placeHeader();
+                  placeEditor(viewPort);
                   //  placePanel(); //TODO: Rethink this feature, is it needed?
                   placeItemSettings(viewPort);
 

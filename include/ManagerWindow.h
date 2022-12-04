@@ -20,16 +20,10 @@ namespace GUIPLUG
 
             ~ManagerWindow()
             {
-                  ImGui_ImplOpenGL3_Shutdown();
-                  ImGui_ImplGlfw_Shutdown();
             }
 
             void placeContent(ImGuiViewport *viewPort, ImFont &mainFont24px, ImFont &mainFont42px)
             {
-                  // Start the Dear ImGui frame
-                  ImGui_ImplOpenGL3_NewFrame();
-                  ImGui_ImplGlfw_NewFrame();
-                  ImGui::NewFrame();
 
                   winSize.x = viewPort->Size.x;
                   winSize.y = viewPort->Size.y;

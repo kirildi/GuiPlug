@@ -2,7 +2,7 @@
 #define PLATFORM_WINDOW_H
 
 #pragma once
-#define SK_GL
+
 #include <GLFW/glfw3.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -14,19 +14,6 @@
 #include "ManagerWindow.h"
 #include "MainWindow.h"
 
-#include "SkData.h"
-#include "SkImage.h"
-#include "SkStream.h"
-#include "SkCanvas.h"
-#include "SkSurface.h"
-#include "SkPaint.h"
-#include "gl/GrGLInterface.h"
-#include "gl/GrGLDefines.h"
-
-#include "SkColorSpace.h"
-#include "GrBackendSurface.h"
-#include "GrDirectContext.h"
-
 #include <GL/gl.h>
 #if defined(SK_BUILD_FOR_UNIX)
 #include <GL/gl.h>
@@ -37,9 +24,7 @@
 #endif
 
 namespace GUIPLUG
-
 {
-
       class PlatformWindow
       {
 
@@ -87,66 +72,25 @@ namespace GUIPLUG
                   setViewPort(ImGui::GetMainViewport());
                   /*-------------------------------------------------------*/
 
-                  sk_sp<const GrGLInterface> gl_interface{};
-                  sk_sp<GrDirectContext> context{GrDirectContext::MakeGL(gl_interface)};
-                  SkASSERT(context);
-
-                  // int fbo = 0, samples = 0, stencilBits = 0;
-                  // GrGLFramebufferInfo fbinfo{};
-                  // fbinfo.fFBOID = fbo;
-                  // fbinfo.fFormat = GR_GL_RGBA8;
-
-                  // GrBackendRenderTarget backendRT(width, height, samples, stencilBits, fbinfo);
-
-                  // surface = SkSurface::MakeFromBackendRenderTarget(context.get(), backendRT,
-                  //                                                  kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType, nullptr, nullptr);
-
-                  // SkImageInfo info{SkImageInfo::MakeN32Premul(width, height)};
-                  // sk_sp<SkSurface> surface{
-                  //     SkSurface::MakeRasterN32Premul(width, height)};
-                  // if (!surface)
-                  // {
-                  //       SkDebugf("SkSurface::MakeRenderTarget returned null\n");
-                  // }
-                  // auto canvas{surface->getCanvas()};
+                  // sk_sp<const GrGLInterface> gl_interface{};
+                  // sk_sp<GrDirectContext> context{GrDirectContext::MakeGL(gl_interface)};
+                  // SkASSERT(context);
 
                   // If PlatformWindow is closed loop is terminated and the program will continue
                   // depending on the which window is the last closed.
                   while (!glfwWindowShouldClose(thisWindow))
                   {
                         glfwPollEvents();
-
-                        SkImageInfo info{SkImageInfo::MakeN32Premul(width, height)};
-                        // sk_sp<SkSurface> surface{SkSurface::MakeRenderTarget(context.get(), SkBudgeted::kYes, info)};
-                        sk_sp<SkSurface> surface{SkSurface::MakeRenderTarget(context.get(), SkBudgeted::kNo, info)};
-
-                        auto canvas{surface->getCanvas()};
-                        //   Clear background
-                        canvas->clear(SK_ColorGREEN);
-
-                        // SkPaint paint;
-                        // paint.setStyle(SkPaint::kStroke_Style);
-                        // paint.setStrokeWidth(8);
-                        // paint.setColor(0xff4285F4);
-                        // paint.setAntiAlias(true);
-                        // paint.setStrokeCap(SkPaint::kRound_Cap);
-
-                        // SkPath path;
-                        // path.moveTo(10, 10);
-                        // path.quadTo(256, 64, 128, 128);
-                        // path.quadTo(10, 192, 250, 250);
-
-                        // canvas->drawPath(path, paint);
-
-                        sk_sp<SkImage> img{surface->makeImageSnapshot()};
-
                         ImGui_ImplOpenGL3_NewFrame();
                         ImGui_ImplGlfw_NewFrame();
+                        // Start the Dear ImGui frame
                         ImGui::NewFrame();
+
                         if (windowId == "manager")
                         {
                               windowSelector = WindowSelector::MANAGER_WINDOW;
-                              // managerWindow.placeContent(viewPort, *mainFont24px, *mainFont42px);
+                              managerWindow.placeContent(viewPort, *mainFont24px, *mainFont42px);
+
                               if (managerWindow.openNewProj)
                               {
                                     windowSelector = WindowSelector::MAIN_WINDOW;
@@ -165,14 +109,14 @@ namespace GUIPLUG
                               mainWindow.isNewProject = managerWindow.isNewProject;
                               mainWindow.placeContent(viewPort, *mainFont24px);
                         }
-
-                        ImGui::Image(context.get(), ImVec2{width - 400, height - 300});
                         // Rendering
                         ImGui::Render();
+
                         glfwGetFramebufferSize(thisWindow, &width, &height);
                         glClearColor(backGroundColor.x * backGroundColor.w, backGroundColor.y * backGroundColor.w, backGroundColor.z * backGroundColor.w, backGroundColor.w);
                         glViewport(0, 0, width, height);
                         glClear(GL_COLOR_BUFFER_BIT);
+
                         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
                         glfwSwapBuffers(thisWindow);
                   }
@@ -189,7 +133,6 @@ namespace GUIPLUG
                   ImGui_ImplOpenGL3_Shutdown();
                   ImGui_ImplGlfw_Shutdown();
                   ImGui::DestroyContext();
-
                   return true;
             }
 
@@ -197,14 +140,21 @@ namespace GUIPLUG
 
             void setupFonts(ImGuiIO &io)
             {
-                  mainFont24px = io.Fonts->AddFontFromFileTTF("D:\\GuiPlug\\resources\\fonts\\Urbanist-SemiBold.ttf", 24.0F, NULL, io.Fonts->GetGlyphRangesDefault());
+                  // TODO can font be loaded by setting a value, or path?
+                  // Fonts are currently loaded by FULL PATH provided
+                  mainFont24px = io.Fonts->AddFontFromFileTTF("D:\\GitHub\\GuiPlug\\resources\\fonts\\Urbanist-SemiBold.ttf",
+                                                              24.0F, NULL, io.Fonts->GetGlyphRangesDefault());
 
                   ImFontConfig config;
                   config.MergeMode = true;
 
                   static const ImWchar icon_ranges[] = {ICON_MIN_FK, ICON_MAX_FK, 0};
-                  io.Fonts->AddFontFromFileTTF("D:\\GuiPlug\\resources\\fonts\\forkawesome-webfont.ttf", 28.0F, &config, icon_ranges);
-                  mainFont42px = io.Fonts->AddFontFromFileTTF("D:\\GuiPlug\\resources\\fonts\\Urbanist-SemiBold.ttf", 42.0F, NULL, io.Fonts->GetGlyphRangesDefault());
+                  // load icons for button with icon
+                  io.Fonts->AddFontFromFileTTF("D:\\GitHub\\GuiPlug\\resources\\fonts\\forkawesome-webfont.ttf",
+                                               28.0F, &config, icon_ranges);
+                  // Main font, but bigger
+                  mainFont42px = io.Fonts->AddFontFromFileTTF("D:\\GitHub\\GuiPlug\\resources\\fonts\\Urbanist-SemiBold.ttf",
+                                                              42.0F, NULL, io.Fonts->GetGlyphRangesDefault());
                   io.Fonts->Build();
             }
             void destroy()
@@ -230,8 +180,6 @@ namespace GUIPLUG
             GLFWmonitor *monitor{}; // use glfwGetPrimaryMonitor() to get primary monitor;
             GLFWwindow *share{};
             GLFWwindow *thisWindow{};
-
-            sk_sp<SkSurface> surface{};
 
             ImGuiViewport *viewPort{nullptr};
 
