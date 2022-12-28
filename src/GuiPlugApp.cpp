@@ -29,7 +29,7 @@ void GUIPLUG::GuiPlugApp::appRun()
 {
       platformWindow.glsl_version = glsl_version;
 
-      while (!isPlatformWindowClosed)
+      while (!isAppFullyClosed)
       {
             windowSelector = platformWindow.windowSelector; // windows management state
 
@@ -51,7 +51,7 @@ void GUIPLUG::GuiPlugApp::appRun()
             auto isCreated = platformWindow.create();
             if (isCreated != nullptr)
             {
-                  isPlatformWindowClosed = platformWindow.showContent(contentIndex);
+                  isAppFullyClosed = platformWindow.showContent(contentIndex);
             }
       }
 }

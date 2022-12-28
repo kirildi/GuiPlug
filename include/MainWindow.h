@@ -167,7 +167,7 @@ namespace GUIPLUG
                   ImGui::Begin("Editor", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
                   if (isNewProject)
                   {
-                        printf("new");
+
                         ImGui::SetCursorPos(ImVec2{0.5F, 0.5F});
                         if (ImGui::Button("Create New Plugin", ImVec2{60.0F, 30.0F}))
                         {

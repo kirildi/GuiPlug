@@ -29,7 +29,7 @@ namespace GUIPLUG
             void appRun();
 
       private:
-            bool isPlatformWindowClosed{false};
+            bool isAppFullyClosed{false};
             std::string contentIndex{""};
 
             GUIPLUG::WindowSelector windowSelector{GUIPLUG::WindowSelector::MANAGER_WINDOW};

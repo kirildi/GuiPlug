@@ -24,7 +24,6 @@ namespace GUIPLUG
 
             void placeContent(ImGuiViewport *viewPort, ImFont &mainFont24px, ImFont &mainFont42px)
             {
-
                   winSize.x = viewPort->Size.x;
                   winSize.y = viewPort->Size.y;
                   ImGui::SetNextWindowPos(winPosition); // set initial position (windows are placed inside platform window)
@@ -83,13 +82,15 @@ namespace GUIPLUG
                         }
                         openExisting.clear();
                   }
+
+                  // New Project
                   if (ImGui::Button(ICON_FK_FILE_O " New Project", ImVec2{210.0F, 48.0F}))
                   {
                         popUpName = "New Project";
                         ImGui::OpenPopup(popUpName.c_str(), ImGuiPopupFlags_None);
-
-                        // Modal content for the "new project". Cannot be combined with OpenPopUp() on same scope.
                   }
+
+                  // Modal content for the "new project". Cannot be combined with OpenPopUp() on same scope (implemented by library)
                   if (ImGui::BeginPopupModal(popUpName.c_str(), NULL,
                                              ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
                   {
@@ -107,7 +108,7 @@ namespace GUIPLUG
                   // "Open recent" column
                   ImGui::TableNextColumn();
                   ImGui::Dummy(ImVec2{0.0F, 12.0F});
-
+                  // TODO - styling and make it to work as intended
                   ImGui::BeginGroup(); // "Open recent" column content group"
                   for (int i = 0; i < 6; i++)
                   {
@@ -127,7 +128,6 @@ namespace GUIPLUG
 
                   ImGui::PopFont();
 
-                  // End of content
                   ImGui::End(); // End ManagerWindow
             }
 
