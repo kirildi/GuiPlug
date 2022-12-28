@@ -20,46 +20,23 @@ namespace GUIPLUG
 {
       class Project
       {
-
       public:
             Project(){};
-
-            Project(nlohmann::json &projectData) : projectLocation{projectData["projectRootDir"]},
-                                                   projectDateCreated{currentDateTime()},
-                                                   projectPlatform{projectData["projectPlatform"]},
-                                                   projectOwner{projectData["projectOwner"]},
-                                                   projectName{projectData["projectName"]}
-            {
-                  projectStructure["header"]["projectOwner"] = projectOwner;
-                  projectStructure["header"]["projectPlatform"] = projectPlatform;
-                  projectStructure["header"]["projectLocation"] = projectLocation;
-                  projectStructure["header"]["projectDateCreated"] = projectDateCreated;
-                  projectStructure["header"]["projectName"] = projectName;
-
-                  projectSave(projectStructure);
-            };
             ~Project(){};
-
-            std::string projectLocation{};
-            std::string projectDateCreated{};
-            std::string projectPlatform{};
-            std::string projectOwner{};
-            std::string projectName{};
-
-            nlohmann::json projectStructure{};
-
-      private:
-            std::string sectionKeyWord{"header"};
-
-            bool projectSave(nlohmann::json &projectStructure)
+            bool projectCreate(nlohmann::json &projectData)
             {
-                  FileManager projectFile;
+                  auto projectName = std::string{projectData["header"]["projectName"]};
+                  auto projectLocation = std::string{projectData["header"]["projectLocation"]};
+                  std::filesystem::path dir{projectLocation + projectName};
 
-                  projectFile.fileSave(projectLocation + projectName + "\\" + projectName + ".gpproj", projectStructure);
-                  return true;
+                  if (fileManager.createDirectory(dir))
+                  {
+                        return projectSave(projectLocation + projectName + "\\" + projectName + ".gpproj", projectData);
+                  }
+                  return false;
             }
 
-            std::string currentDateTime()
+            const std::string currentDateTime()
             {
                   std::time_t t = std::time(nullptr);
                   std::tm *now = std::localtime(&t);
@@ -68,6 +45,13 @@ namespace GUIPLUG
                   strftime(buffer, sizeof(buffer), "%d/%m/%Y@%X", now);
                   return buffer;
             }
+
+      private:
+            bool projectSave(const std::string &filePathForSave, const nlohmann::json &projectStructure)
+            {
+                  return (fileManager.fileSave(filePathForSave, projectStructure)) ? true : false;
+            }
+            FileManager fileManager{};
       };
 }
 

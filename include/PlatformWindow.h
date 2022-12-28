@@ -70,13 +70,8 @@ namespace GUIPLUG
 
                   // Setting the PlatformWindow as main ViewPort to host "Dear ImGui" windows
                   setViewPort(ImGui::GetMainViewport());
-                  /*-------------------------------------------------------*/
 
-                  // sk_sp<const GrGLInterface> gl_interface{};
-                  // sk_sp<GrDirectContext> context{GrDirectContext::MakeGL(gl_interface)};
-                  // SkASSERT(context);
-
-                  // If PlatformWindow is closed loop is terminated and the program will continue
+                  // If PlatformWindow is closed, loop is terminated and the program will continue
                   // depending on the which window is the last closed.
                   while (!glfwWindowShouldClose(thisWindow))
                   {
@@ -90,15 +85,14 @@ namespace GUIPLUG
                         {
                               windowSelector = WindowSelector::MANAGER_WINDOW;
                               managerWindow.placeContent(viewPort, *mainFont24px, *mainFont42px);
-
                               if (managerWindow.openNewProj)
                               {
                                     windowSelector = WindowSelector::MAIN_WINDOW;
                                     glfwDestroyWindow(thisWindow);
                                     thisWindow = nullptr;
-                                    managerWindow.openNewProj = false;
-                                    ImGui::DestroyContext();
-                                    return false;
+                                    shutdownGUI();
+                                    isAppFullyClosed = false;
+                                    return isAppFullyClosed;
                               }
                         }
 
@@ -121,19 +115,22 @@ namespace GUIPLUG
                         glfwSwapBuffers(thisWindow);
                   }
 
-                  if (windowSelector == WindowSelector::MAIN_WINDOW)
+                  // After platform window closed.
+                  if (windowSelector != WindowSelector::MANAGER_WINDOW)
                   {
                         windowSelector = WindowSelector::MANAGER_WINDOW;
                         glfwDestroyWindow(thisWindow);
                         thisWindow = nullptr;
-                        ImGui::DestroyContext();
-                        return false;
+                        managerWindow.openNewProj = false;
+                        isAppFullyClosed = false;
+                  }
+                  else
+                  {
+                        isAppFullyClosed = true;
                   }
 
-                  ImGui_ImplOpenGL3_Shutdown();
-                  ImGui_ImplGlfw_Shutdown();
-                  ImGui::DestroyContext();
-                  return true;
+                  shutdownGUI();
+                  return isAppFullyClosed;
             }
 
             void setViewPort(ImGuiViewport *viewPort) { this->viewPort = viewPort; }
@@ -181,6 +178,8 @@ namespace GUIPLUG
             GLFWwindow *share{};
             GLFWwindow *thisWindow{};
 
+            bool isAppFullyClosed{false};
+
             ImGuiViewport *viewPort{nullptr};
 
             ImVec4 backGroundColor{ImVec4{0.3f, 0.3f, 0.3f, 1.00f}};
@@ -190,6 +189,13 @@ namespace GUIPLUG
 
             ImFont *mainFont24px{};
             ImFont *mainFont42px{};
+
+            void shutdownGUI()
+            {
+                  ImGui_ImplOpenGL3_Shutdown();
+                  ImGui_ImplGlfw_Shutdown();
+                  ImGui::DestroyContext();
+            };
       };
 }
 #endif // PLATFORM_WINDOW_H

@@ -27,14 +27,13 @@ namespace GUIPLUG
             {
                   // Centers modal window
                   viewPort = ImGui::GetMainViewport();
-                  popUpStartPos.x = viewPort->Size.x * 0.111F;
-                  popUpStartPos.y = viewPort->Size.y * 0.111F;
-                  popUpSize.x = viewPort->Size.x - (viewPort->Size.x * 0.111F * 2.0F);
-                  popUpSize.y = viewPort->Size.y - (viewPort->Size.y * 0.111F * 2.0F);
+                  wizardStartPos.x = viewPort->Size.x * 0.111F;
+                  wizardStartPos.y = viewPort->Size.y * 0.111F;
+                  wizardDimensions.x = viewPort->Size.x - (viewPort->Size.x * 0.111F * 2.0F);
+                  wizardDimensions.y = viewPort->Size.y - (viewPort->Size.y * 0.111F * 2.0F);
 
-                  ImGui::SetNextWindowPos(popUpStartPos, ImGuiCond_Appearing);
-                  ImGui::SetNextWindowSize(popUpSize);
-
+                  ImGui::SetNextWindowPos(wizardStartPos, ImGuiCond_Appearing);
+                  ImGui::SetNextWindowSize(wizardDimensions);
                   ImGui::SetNextWindowBgAlpha(1.0F);
 
                   if (wizardWindowId != "wzProject")
@@ -65,14 +64,14 @@ namespace GUIPLUG
                   ImGui::SameLine(0.0F, 52.0F);
                   ImGui::LabelText("##project_platform_label", "Platform/OS");
 
-                  ImGui::InputText("##project_name: ", projectName, sizeof(projectName));
+                  ImGui::InputText("##project_name: ", &projectName);
                   ImGui::SameLine(0.0F, 52.0F);
 
                   const char *items[] = {"Windows", "Linux", "OSX"};
                   static const char *item_current = items[0];
                   if (ImGui::BeginCombo("##project_platform_select", item_current)) // The second parameter is the label previewed.
                   {
-                        // TODO Size of popup is not the same as field
+                        // TODO Width of popup is not the same as field width
                         projectPlatform = "";
                         for (int n = 0; n < IM_ARRAYSIZE(items); n++)
                         {
@@ -91,15 +90,15 @@ namespace GUIPLUG
                   ImGui::SameLine(0.0F, 52.0F);
                   ImGui::LabelText("##last_name", "Last/Second Name");
 
-                  ImGui::InputText("##first_name_input ", firstName, sizeof(firstName));
+                  ImGui::InputText("##first_name_input ", &firstName);
                   ImGui::SameLine(0.0F, 52.0F);
-                  ImGui::InputText("##last_name_input ", lastName, sizeof(lastName));
+                  ImGui::InputText("##last_name_input ", &lastName);
 
                   ImGui::PopItemWidth();
                   ImGui::EndGroup();
 
+                  // Project Location
                   ImGui::BeginGroup();
-                  // Location
                   ImGui::LabelText("##project_dir", "Location");
                   ImGui::PushItemWidth(400.0F);
                   ImGui::InputText("##project_dir_input", &projectRootDir);
@@ -111,44 +110,31 @@ namespace GUIPLUG
                         projectRootDir = dir.c_str();
                   }
                   ImGui::PopItemWidth();
-
-                  // IPLUG dir
-                  ImGui::LabelText("##framework_dir", "IPLUG Location");
-                  ImGui::PushItemWidth(400.0F);
-                  ImGui::InputText("##framework_dir_input", &iplugDir);
-
-                  ImGui::SameLine(0.0F, 30.0F);
-                  if (ImGui::Button("Browse...", ImVec2{90.0F, 32.0F}))
-                  {
-                        auto dir = pfd::select_folder("Select IPLUG directory").result();
-                        iplugDir = dir.c_str();
-                  }
-                  ImGui::PopItemWidth();
-                  ImGui::EndGroup(); // TODO
+                  ImGui::EndGroup();
 
                   ImGui::PopStyleColor();
                   ImGui::PopStyleVar(5);
 
+                  // Place confirmation buttons
                   ImGui::Dummy(ImVec2{0.0F, 12.0F});
-                  // Buttons bottom
                   wizardButtons();
 
-                  if (isDone)
+                  if (isDoneClicked)
                   {
-                        std::string projectInRootDir = std::string{projectName} + "\\" + std::string{projectName} + ".gpproj";
+                        auto projectFileInRootDir{projectName + "\\" + projectName + ".gpproj"};
 
-                        isProjectExist = fileManger.fileExist(projectRootDir + projectInRootDir);
+                        isProjectExist = fileManger.fileExist(projectRootDir + projectFileInRootDir);
                         if (!isProjectExist)
                         {
-                              collectPopUpData(); // stores input data before create
-                              projectCreate(projectData);
+                              fillForNewProject(); // stores input data before create
+                              project.projectCreate(projectData);
                               projectData.clear();
                         }
                         else
                         {
                               ImGui::OpenPopup("Project Exist", ImGuiPopupFlags_AnyPopupLevel);
                         }
-                        return isDone;
+                        return isDoneClicked;
                   }
 
                   // Confirmation modal if project exist in provided path
@@ -159,17 +145,17 @@ namespace GUIPLUG
                         ImGui::LabelText("##project_exist_label", "Project already exist.");
                         ImGui::LabelText("##project_exist_label2", "Do you want to open it?");
 
-                        ImGui::SetCursorPos(ImVec2{popUpSize.x * 0.3F, popUpSize.y * 0.5F});
+                        ImGui::SetCursorPos(ImVec2{wizardDimensions.x * 0.3F, wizardDimensions.y * 0.5F});
                         ImGui::BeginGroup();
                         if (ImGui::Button("OK", ImVec2{120.0F, 32.0F}))
                         {
-                              isDone = true;
+                              isDoneClicked = true;
                               ImGui::CloseCurrentPopup();
                         }
                         ImGui::SameLine(0, 12.0F);
                         if (ImGui::Button("Cancel", ImVec2{120.0F, 32.0F}))
                         {
-                              isDone = false;
+                              isDoneClicked = false;
                               ImGui::CloseCurrentPopup();
                         }
                         ImGui::EndGroup();
@@ -203,7 +189,7 @@ namespace GUIPLUG
                               // Render platform selection
                               ImGui::BeginGroup();
                               ImGui::LabelText("", "Rendering platform: ");
-                              const char *items[] = {"IPLUG_default(nanoSVG)", "SKIA", "OpenGL3", "Cairo_graphics"};
+                              const char *items[] = {"SKIA", "OpenGL3", "Cairo_graphics"};
                               static const char *item_current = items[0];
                               if (ImGui::BeginCombo("##render_select", item_current)) // The second parameter is the label previewed.
                               {
@@ -239,12 +225,6 @@ namespace GUIPLUG
                               ImGui::SameLine();
                               ImGui::RadioButton("LV2", &e, 2);
 
-                              // TODO: Iplug Directorie path field
-
-                              // static bool check = true;
-                              // ImGui::Checkbox("checkbox", &check);
-                              // ImGui::Checkbox("checkbx", &check);
-
                               ImGui::EndGroup();
                               ImGui::EndTabItem();
                         }
@@ -259,33 +239,42 @@ namespace GUIPLUG
             bool isProjectExist{false};
 
       private:
-            char projectName[100] = {};
-            char firstName[100] = {};
-            char lastName[100] = {};
+            std::string projectName{};
+            std::string firstName{};
+            std::string lastName{};
             std::string projectPlatform{};
 
-            bool isDone{false};
-            // Default location
+            bool isDoneClicked{false};
+
+            // Default location related to executable directory
             std::string projectRootDir{std::filesystem::current_path().string() + "\\Projects\\"};
-            std::string iplugDir{""};
 
             // Stores the data from input fields until project created
             nlohmann::json projectData{};
 
-            ImGuiViewport *viewPort{nullptr};
-            ImVec2 popUpStartPos{0.0F, 0.0F};
-            ImVec2 popUpSize{0.0F, 0.0F};
+            Project project{};
+            FileManager fileManger{};
 
-            FileManager fileManger;
+            ImGuiViewport *viewPort{nullptr};
+            ImVec2 wizardStartPos{0.0F, 0.0F};
+            ImVec2 wizardDimensions{0.0F, 0.0F};
+
+            void fillForNewProject()
+            {
+                  projectData["header"]["projectLocation"] = projectRootDir;
+                  projectData["header"]["projectPlatform"] = projectPlatform;
+                  projectData["header"]["projectOwner"] = firstName.append(lastName);
+                  projectData["header"]["projectName"] = projectName;
+            }
 
             void wizardButtons()
             {
                   ImGui::Dummy(ImVec2{0.0F, 12.0F});
-                  ImGui::SetCursorPos(ImVec2{popUpSize.x * 0.46F, popUpSize.y - 21.0F});
+                  ImGui::SetCursorPos(ImVec2{wizardDimensions.x * 0.46F, wizardDimensions.y - 21.0F});
 
                   ImGui::BeginGroup(); // wizardButtons
                   if (ImGui::Button("Done", ImVec2{100.0F, 32.0F}))
-                        isDone = true;
+                        isDoneClicked = true;
 
                   ImGui::SameLine(0, 12.0F);
 
@@ -293,24 +282,6 @@ namespace GUIPLUG
                         ImGui::CloseCurrentPopup();
 
                   ImGui::EndGroup();
-            }
-
-            void collectPopUpData()
-            {
-                  // projectData["projectLocation"] =
-                  projectData["projectName"] = projectName;
-                  projectData["projectPlatform"] = projectPlatform;
-                  projectData["projectOwner"] = std::string{firstName} + std::string{lastName};
-                  projectData["projectRootDir"] = projectRootDir;
-            }
-
-            Project projectCreate(nlohmann::json &projectData)
-            {
-                  std::filesystem::path dir{std::string{projectData["projectRootDir"]} + std::string{projectName}};
-                  if (fileManger.createDirectory(dir))
-                        return Project{projectData};
-
-                  return Project{};
             }
       };
 
