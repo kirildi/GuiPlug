@@ -1,5 +1,5 @@
-#ifndef GUI_PLUG_APP_H
-#define GUI_PLUG_APP_H
+#ifndef GUIPLUGAPP_HPP
+#define GUIPLUGAPP_HPP
 
 #pragma once
 
@@ -10,8 +10,8 @@
 #include "imgui_impl_opengl3.h"
 #include <string>
 
-#include "Enums.h"
-#include "PlatformWindow.h"
+#include "Enums.hpp"
+#include "PlatformWindow.hpp"
 
 namespace GUIPLUG
 {
@@ -21,9 +21,9 @@ namespace GUIPLUG
             GuiPlugApp();
             ~GuiPlugApp();
 
-            const char *glsl_version{};
+            std::string glsl_version{};
 
-            // The main window which contains the different App windows
+            // The main window which contains the different windows
             PlatformWindow platformWindow{0, 0, "", glsl_version};
 
             void appRun();
@@ -35,4 +35,4 @@ namespace GUIPLUG
             GUIPLUG::WindowSelector windowSelector{GUIPLUG::WindowSelector::MANAGER_WINDOW};
       };
 }
-#endif
+#endif // GUIPLUGAPP_HPP
