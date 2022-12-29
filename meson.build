@@ -64,6 +64,13 @@ libs=[]
 
 src=[
       'src/GuiPlugApp.cpp',
+      'src/PlatformWindow.cpp',
+      'src/ManagerWindow.cpp',
+      'src/MainWindow.cpp',
+      'src/WizardWindow.cpp',
+      'src/FileManager.cpp',
+      'src/Project.cpp',
+      'src/SkiaHandler.cpp',
       'imgui/imgui.cpp',
       'imgui/imgui_stdlib.cpp',
       'imgui/imgui_draw.cpp',

@@ -1,5 +1,5 @@
-#ifndef ENUMS_H
-#define ENUMS_H
+#ifndef ENUMS_HPP
+#define ENUMS_HPP
 
 namespace GUIPLUG
 {

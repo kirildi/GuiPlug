@@ -1,4 +1,4 @@
-#include "GuiPlugApp.h"
+#include "GuiPlugApp.hpp"
 
 GUIPLUG::GuiPlugApp::GuiPlugApp() : glsl_version{"#version 130"}
 {
