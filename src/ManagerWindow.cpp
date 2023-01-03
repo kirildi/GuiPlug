@@ -81,8 +81,8 @@ void GUIPLUG::ManagerWindow::placeContent(ImGuiViewport *viewPort, ImFont &mainF
                                  ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
       {
             ImGui::SetNextWindowBgAlpha(1.0F);
-            WizardWindow.showWizard("wzProject");
-            if (WizardWindow.wizardResult)
+            wizardWindow.showWizard("wzProject");
+            if (wizardWindow.wizardResult)
             {
                   openNewProj = true;
                   isNewProject = true;

@@ -29,7 +29,7 @@ namespace GUIPLUG
             ImVec2 winSize{0.0F, 0.0F};
             std::string popUpName{""};
 
-            WizardWindow WizardWindow{};
+            WizardWindow wizardWindow{};
       };
 
 } // GUIPLUG

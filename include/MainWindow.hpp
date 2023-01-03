@@ -5,9 +5,10 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "FileManager.hpp"
-#include "SkiaHandler.hpp"
 #include "json.hpp"
+#include "FileManager.hpp"
+#include "Project.hpp"
+#include "Plugin.hpp"
 
 namespace GUIPLUG
 {
@@ -28,6 +29,8 @@ namespace GUIPLUG
             ImVec2 winSize{0.0F, 0.0F};
 
             FileManager fileManager{};
+            Project project{};
+            Plugin plugin{};
 
             // SkiaHandler skiaHandler{};
 
