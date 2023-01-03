@@ -70,6 +70,7 @@ src=[
       'src/WizardWindow.cpp',
       'src/FileManager.cpp',
       'src/Project.cpp',
+      'src/Plugin.cpp',
       'src/SkiaHandler.cpp',
       'imgui/imgui.cpp',
       'imgui/imgui_stdlib.cpp',

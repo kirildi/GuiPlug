@@ -36,9 +36,10 @@ void GUIPLUG::MainWindow::placeHeader()
                   }
                   if (ImGui::BeginMenu("Open Recent"))
                   {
-                        ImGui::MenuItem("fish_hat.c");
-                        ImGui::MenuItem("fish_hat.inl");
-                        ImGui::MenuItem("fish_hat.h");
+                        // TODO implement logic for recently opened projects
+                        ImGui::MenuItem("plug1.gpproj");
+                        ImGui::MenuItem("plug2.gpproj");
+                        ImGui::MenuItem("plug3.gpproj");
                         ImGui::EndMenu();
                   }
                   if (ImGui::MenuItem("Save", "Ctrl+S"))
@@ -102,6 +103,9 @@ void GUIPLUG::MainWindow::placeHeader()
                   {
                   }
                   if (ImGui::MenuItem("Build LV2 (LADSPA Version 2)"))
+                  {
+                  }
+                  if (ImGui::MenuItem("Build CLAP"))
                   {
                   }
                   ImGui::EndMenu();
