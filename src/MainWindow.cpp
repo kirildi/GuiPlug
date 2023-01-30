@@ -136,13 +136,13 @@ void GUIPLUG::MainWindow::placePanel()
 
 void GUIPLUG::MainWindow::placeEditor(ImGuiViewport *viewPort)
 {
-      winPosition.x = 0.0F;
-      winPosition.y = 27.0F;
-      winSize.x = viewPort->Size.x * 0.80F;
-      winSize.y = viewPort->Size.y - 20.0F;
+      mainWinPosition.x = 0.0F;
+      mainWinPosition.y = 27.0F;
+      mainWinSize.x = viewPort->Size.x * 0.80F;
+      mainWinSize.y = viewPort->Size.y - 20.0F;
 
-      ImGui::SetNextWindowPos(winPosition);
-      ImGui::SetNextWindowSize(winSize);
+      ImGui::SetNextWindowPos(mainWinPosition);
+      ImGui::SetNextWindowSize(mainWinSize);
 
       ImGui::Begin("Editor", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
       if (isNewProject)
@@ -153,20 +153,20 @@ void GUIPLUG::MainWindow::placeEditor(ImGuiViewport *viewPort)
             {
             }
       }
-      ImGui::SetCursorPos(ImVec2{winSize.x / 2.0F, winSize.y / 2.0F});
+      ImGui::SetCursorPos(ImVec2{mainWinSize.x / 2.0F, mainWinSize.y / 2.0F});
 
       ImGui::End();
 }
 
 void GUIPLUG::MainWindow::placeItemSettings(ImGuiViewport *viewPort)
 {
-      winPosition.x = viewPort->Size.x * 0.80F;
-      winPosition.y = 27.0F;
-      winSize.x = viewPort->Size.x * 0.20F;
-      winSize.y = viewPort->Size.y;
+      mainWinPosition.x = viewPort->Size.x * 0.80F;
+      mainWinPosition.y = 27.0F;
+      mainWinSize.x = viewPort->Size.x * 0.20F;
+      mainWinSize.y = viewPort->Size.y;
 
-      ImGui::SetNextWindowPos(winPosition);
-      ImGui::SetNextWindowSize(winSize);
+      ImGui::SetNextWindowPos(mainWinPosition);
+      ImGui::SetNextWindowSize(mainWinSize);
 
       ImGui::Begin("ItemSettings", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
       if (ImGui::CollapsingHeader("Positioning", ImGuiTreeNodeFlags_Selected))

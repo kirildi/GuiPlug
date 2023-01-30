@@ -11,22 +11,27 @@ bool GUIPLUG::Project::projectCreate(nlohmann::json &projectData)
 
       if (fileManager.createDirectory(dir))
       {
-            return projectSave(projectLocation + projectName + "\\" + projectName + ".gpproj", projectData);
+            return save(projectLocation + projectName + "\\" + projectName + fileExtension, projectData);
       }
       return false;
 }
 
-const std::string GUIPLUG::Project::currentDateTime()
+nlohmann::json GUIPLUG::Project::loadSaved(const std::string &pathOfSaved)
 {
-      std::time_t t = std::time(nullptr);
-      std::tm *now = std::localtime(&t);
-
-      char buffer[128];
-      strftime(buffer, sizeof(buffer), "%d/%m/%Y@%X", now);
-      return buffer;
+      return nlohmann::json();
 }
 
-bool GUIPLUG::Project::projectSave(const std::string &filePathForSave, const nlohmann::json &projectStructure)
+nlohmann::json GUIPLUG::Project::fetchFromSaved(std::string &key)
 {
-      return (fileManager.fileSave(filePathForSave, projectStructure)) ? true : false;
+      return nlohmann::json();
+}
+
+bool GUIPLUG::Project::save()
+{
+      return false;
+}
+
+bool GUIPLUG::Project::save(const std::string &pathToSave, const nlohmann::json &projectStructure)
+{
+      return (fileManager.fileSave(pathToSave, projectStructure)) ? true : false;
 }

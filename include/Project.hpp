@@ -5,6 +5,7 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
+#include "HelperFunctions.hpp"
 #include "FileManager.hpp"
 
 /* Default Project Structure
@@ -24,13 +25,22 @@ namespace GUIPLUG
             Project();
             ~Project();
 
+            bool isSaved{false};
             bool projectCreate(nlohmann::json &projectData);
+            nlohmann::json projectHeader{};
+            nlohmann::json projectPlugin{};
+            nlohmann::json projectWindow{};
+            nlohmann::json projectMisc{};
 
-            const std::string currentDateTime(); // get current date/time on project create
+            nlohmann::json loadSaved(const std::string &pathOfSaved);
+            nlohmann::json fetchFromSaved(std::string &key);
+
+            bool save();
+            bool save(const std::string &pathToSave, const nlohmann::json &projectStructure);
 
       private:
             FileManager fileManager{};
-            bool projectSave(const std::string &filePathForSave, const nlohmann::json &projectStructure);
+            const std::string fileExtension{".gpproj"};
       };
 }
 
