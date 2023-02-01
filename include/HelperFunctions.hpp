@@ -7,7 +7,7 @@
 namespace GUIPLUG
 {
       // get current date/time
-      const std::string currentDateTime()
+      static const std::string currentDateTime()
       {
             std::time_t t = std::time(nullptr);
             std::tm *now = std::localtime(&t);

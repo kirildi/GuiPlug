@@ -26,7 +26,7 @@ namespace GUIPLUG
             ~Project();
 
             bool isSaved{false};
-            bool projectCreate(nlohmann::json &projectData);
+
             nlohmann::json projectHeader{};
             nlohmann::json projectPlugin{};
             nlohmann::json projectWindow{};
@@ -38,9 +38,15 @@ namespace GUIPLUG
             bool save();
             bool save(const std::string &pathToSave, const nlohmann::json &projectStructure);
 
+            const std::string fileExtension{".gpproj"};
+            std::string projectName{};
+            std::string firstName{};
+            std::string lastName{};
+            std::string projectPlatform{};
+            std::string projectLocation{};
+
       private:
             FileManager fileManager{};
-            const std::string fileExtension{".gpproj"};
       };
 }
 

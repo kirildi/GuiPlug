@@ -3,19 +3,6 @@
 GUIPLUG::Project::Project(){};
 GUIPLUG::Project::~Project(){};
 
-bool GUIPLUG::Project::projectCreate(nlohmann::json &projectData)
-{
-      auto projectName = std::string{projectData["header"]["projectName"]};
-      auto projectLocation = std::string{projectData["header"]["projectLocation"]};
-      std::filesystem::path dir{projectLocation + projectName};
-
-      if (fileManager.createDirectory(dir))
-      {
-            return save(projectLocation + projectName + "\\" + projectName + fileExtension, projectData);
-      }
-      return false;
-}
-
 nlohmann::json GUIPLUG::Project::loadSaved(const std::string &pathOfSaved)
 {
       return nlohmann::json();
@@ -28,7 +15,18 @@ nlohmann::json GUIPLUG::Project::fetchFromSaved(std::string &key)
 
 bool GUIPLUG::Project::save()
 {
-      return false;
+      nlohmann::json projectStructure{};
+      // TODO what if the structures aren't empty?
+      if (!projectHeader.empty())
+            projectStructure.update(projectHeader, true);
+      if (!projectWindow.empty())
+            projectStructure.update(projectWindow, true);
+      if (!projectPlugin.empty())
+            projectStructure.update(projectPlugin, true);
+      if (!projectMisc.empty())
+            projectStructure.update(projectMisc, true);
+
+      return (fileManager.fileSave(projectLocation + projectName + fileExtension, projectStructure)) ? true : false;
 }
 
 bool GUIPLUG::Project::save(const std::string &pathToSave, const nlohmann::json &projectStructure)
