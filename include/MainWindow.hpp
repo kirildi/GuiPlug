@@ -25,8 +25,8 @@ namespace GUIPLUG
 
             bool isNewProject{false}; // To detect if project is opened from file or is newly created.
       private:
-            ImVec2 winPosition{0.0F, 0.0F};
-            ImVec2 winSize{0.0F, 0.0F};
+            ImVec2 mainWinPosition{0.0F, 0.0F};
+            ImVec2 mainWinSize{0.0F, 0.0F};
 
             FileManager fileManager{};
             Project project{};

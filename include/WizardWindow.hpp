@@ -29,21 +29,13 @@ namespace GUIPLUG
             bool isProjectExist{false};
 
       private:
-            std::string projectName{};
-            std::string firstName{};
-            std::string lastName{};
-            std::string projectPlatform{};
-
             bool isDoneClicked{false};
 
             // Default location related to executable directory
             std::string projectRootDir{std::filesystem::current_path().string() + "\\Projects\\"};
 
-            // Stores the data from input fields until project created
-            nlohmann::json projectData{};
-
             Project project{};
-            FileManager fileManger{};
+            FileManager fileManager{};
 
             ImGuiViewport *viewPort{nullptr};
             ImVec2 wizardStartPos{0.0F, 0.0F};

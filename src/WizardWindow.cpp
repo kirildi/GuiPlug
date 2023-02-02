@@ -43,24 +43,23 @@ bool GUIPLUG::WizardWindow::wizardProject()
       ImGui::SameLine(0.0F, 52.0F);
       ImGui::LabelText("##project_platform_label", "Platform/OS");
 
-      ImGui::InputText("##project_name: ", &projectName);
+      ImGui::InputText("##project_name: ", &project.projectName);
       ImGui::SameLine(0.0F, 52.0F);
 
-      const char *items[] = {"Windows", "Linux", "OSX"};
-      static const char *item_current = items[0];
-      if (ImGui::BeginCombo("##project_platform_select", item_current)) // The second parameter is the label previewed.
+      const char *platformList[] = {"Windows", "Linux", "OSX"};
+      static const char *current_platform = platformList[0];
+      if (ImGui::BeginCombo("##project_platform_select", current_platform)) // The second parameter is the label previewed.
       {
             // TODO Width of popup is not the same as field width
-            projectPlatform = "";
-            for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+
+            for (int n = 0; n < IM_ARRAYSIZE(platformList); n++)
             {
-                  bool is_selected = (item_current == items[n]);
-                  if (ImGui::Selectable(items[n], is_selected))
-                        item_current = items[n];
+                  bool is_selected = (current_platform == platformList[n]);
+                  if (ImGui::Selectable(platformList[n], is_selected))
+                        current_platform = platformList[n];
                   if (is_selected)
                         ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
             }
-            projectPlatform = item_current;
             ImGui::EndCombo();
       }
 
@@ -69,9 +68,9 @@ bool GUIPLUG::WizardWindow::wizardProject()
       ImGui::SameLine(0.0F, 52.0F);
       ImGui::LabelText("##last_name", "Last/Second Name");
 
-      ImGui::InputText("##first_name_input ", &firstName);
+      ImGui::InputText("##first_name_input ", &project.firstName);
       ImGui::SameLine(0.0F, 52.0F);
-      ImGui::InputText("##last_name_input ", &lastName);
+      ImGui::InputText("##last_name_input ", &project.lastName);
 
       ImGui::PopItemWidth();
       ImGui::EndGroup();
@@ -85,8 +84,7 @@ bool GUIPLUG::WizardWindow::wizardProject()
       ImGui::SameLine(0.0F, 30.0F);
       if (ImGui::Button("Browse...", ImVec2{90.0F, 32.0F}))
       {
-            auto dir = pfd::select_folder("Select a directory").result();
-            projectRootDir = dir.c_str();
+            projectRootDir = pfd::select_folder("Select a directory").result();
       }
       ImGui::PopItemWidth();
       ImGui::EndGroup();
@@ -100,14 +98,19 @@ bool GUIPLUG::WizardWindow::wizardProject()
 
       if (isDoneClicked)
       {
-            auto projectFileInRootDir{projectName + "\\" + projectName + ".gpproj"};
+            project.projectPlatform = current_platform;
+            project.projectLocation = projectRootDir + project.projectName + "\\";
 
-            isProjectExist = fileManger.fileExist(projectRootDir + projectFileInRootDir);
+            isProjectExist = fileManager.fileExist(project.projectLocation + project.projectName + project.fileExtension);
             if (!isProjectExist)
             {
                   fillForNewProject(); // stores input data before create
-                  project.projectCreate(projectData);
-                  projectData.clear();
+                  std::filesystem::path dir{project.projectLocation};
+
+                  if (fileManager.createDirectory(dir))
+                  {
+                        project.save();
+                  }
             }
             else
             {
@@ -215,10 +218,11 @@ bool GUIPLUG::WizardWindow::wizardPlugin()
 
 void GUIPLUG::WizardWindow::fillForNewProject()
 {
-      projectData["header"]["projectLocation"] = projectRootDir;
-      projectData["header"]["projectPlatform"] = projectPlatform;
-      projectData["header"]["projectOwner"] = firstName.append(lastName);
-      projectData["header"]["projectName"] = projectName;
+      project.projectHeader["header"]["projectLocation"] = project.projectLocation;
+      project.projectHeader["header"]["projectPlatform"] = project.projectPlatform;
+      project.projectHeader["header"]["projectOwner"] = project.firstName.append(project.lastName);
+      project.projectHeader["header"]["projectName"] = project.projectName;
+      project.projectHeader["header"]["projectDateCreated"] = currentDateTime();
 };
 
 void GUIPLUG::WizardWindow::wizardButtons()
@@ -226,7 +230,7 @@ void GUIPLUG::WizardWindow::wizardButtons()
       ImGui::Dummy(ImVec2{0.0F, 12.0F});
       ImGui::SetCursorPos(ImVec2{wizardDimensions.x * 0.46F, wizardDimensions.y - 21.0F});
 
-      ImGui::BeginGroup(); // wizardButtons
+      ImGui::BeginGroup();
       if (ImGui::Button("Done", ImVec2{100.0F, 32.0F}))
             isDoneClicked = true;
 

@@ -3,30 +3,33 @@
 GUIPLUG::Project::Project(){};
 GUIPLUG::Project::~Project(){};
 
-bool GUIPLUG::Project::projectCreate(nlohmann::json &projectData)
+nlohmann::json GUIPLUG::Project::loadSaved(const std::string &pathOfSaved)
 {
-      auto projectName = std::string{projectData["header"]["projectName"]};
-      auto projectLocation = std::string{projectData["header"]["projectLocation"]};
-      std::filesystem::path dir{projectLocation + projectName};
-
-      if (fileManager.createDirectory(dir))
-      {
-            return projectSave(projectLocation + projectName + "\\" + projectName + ".gpproj", projectData);
-      }
-      return false;
+      return nlohmann::json();
 }
 
-const std::string GUIPLUG::Project::currentDateTime()
+nlohmann::json GUIPLUG::Project::fetchFromSaved(std::string &key)
 {
-      std::time_t t = std::time(nullptr);
-      std::tm *now = std::localtime(&t);
-
-      char buffer[128];
-      strftime(buffer, sizeof(buffer), "%d/%m/%Y@%X", now);
-      return buffer;
+      return nlohmann::json();
 }
 
-bool GUIPLUG::Project::projectSave(const std::string &filePathForSave, const nlohmann::json &projectStructure)
+bool GUIPLUG::Project::save()
 {
-      return (fileManager.fileSave(filePathForSave, projectStructure)) ? true : false;
+      nlohmann::json projectStructure{};
+      // TODO what if the structures aren't empty?
+      if (!projectHeader.empty())
+            projectStructure.update(projectHeader, true);
+      if (!projectWindow.empty())
+            projectStructure.update(projectWindow, true);
+      if (!projectPlugin.empty())
+            projectStructure.update(projectPlugin, true);
+      if (!projectMisc.empty())
+            projectStructure.update(projectMisc, true);
+
+      return (fileManager.fileSave(projectLocation + projectName + fileExtension, projectStructure)) ? true : false;
+}
+
+bool GUIPLUG::Project::save(const std::string &pathToSave, const nlohmann::json &projectStructure)
+{
+      return (fileManager.fileSave(pathToSave, projectStructure)) ? true : false;
 }

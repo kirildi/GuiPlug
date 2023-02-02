@@ -10,10 +10,10 @@ bool GUIPLUG::FileManager::fileOpen(const std::string &filePath, bool createNew)
             fileManager.open(filePath, std::ios::out);
             fileClose();
       }
+
       fileManager.open(filePath, std::ios::out | std::ios::app);
-      if (fileManager.is_open())
-            return true;
-      return false;
+
+      return fileManager.is_open();
 };
 
 bool GUIPLUG::FileManager::fileClose()
@@ -24,14 +24,12 @@ bool GUIPLUG::FileManager::fileClose()
 
 bool GUIPLUG::FileManager::fileSave(const std::string &filePathForSave, const nlohmann::json &data)
 {
-      if (fileOpen(filePathForSave, true))
-      {
-            std::string dataAsString = data.dump(4);
-            fileManager.write(dataAsString.c_str(), dataAsString.size());
-            fileClose();
-      }
-      else
+      if (!fileOpen(filePathForSave, true))
             return false;
+
+      std::string dataAsString = data.dump(4);
+      fileManager.write(dataAsString.c_str(), dataAsString.size());
+      fileClose();
 
       return true;
 }
