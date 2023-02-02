@@ -10,11 +10,11 @@ Musical instrument and fx plugin maker
 - **imgui** - The Dear Imgui GUI library;
 - **imgui/backends** - put imgui backend impl here;
 - **imgui/renderers** - put imgui renderer impl here;
-- **include** - the project headers(.h);
+- **include** - the project headers;
 - **lib** - additional libs;
 - **(hidden)release** - project production dir(you can name it whatever you want);
 - **resources** - fonts, images used in the project;
-- **src** - the project definitions files (.cpp);
+- **src** - the project definitions files;
 - **main.cpp** - main project file;
 - **meson.build** - Meson build system configuration file;
 - **nlohmann** - JSON library;
@@ -27,7 +27,7 @@ _Quote: lib contains glfw3.dll, which is required by the .exe. For now you can c
 
 ### tasks.json
 
-For VS code build task add this in tasks.json:
+For VS code build task add this, or modify it for your setup, in **tasks.json**:
 
 ```
 {
