@@ -115,6 +115,6 @@ executable('a',
            sources : src,
            dependencies : libs,
            install : true,
-           install_dir: './release/')
+           install_dir: source_dir + '/release/')
 
  
