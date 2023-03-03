@@ -145,16 +145,21 @@ void GUIPLUG::MainWindow::placeEditor(ImGuiViewport *viewPort)
       ImGui::SetNextWindowSize(mainWinSize);
 
       ImGui::Begin("Editor", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+      ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2{0.12F, 0.5F});
+      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.16F, 0.16F, 0.16F, 1.0F}); // All buttons in following table
+      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{0.25F, 0.25F, 0.25F, 1.0F});
       if (isNewProject)
       {
-
-            ImGui::SetCursorPos(ImVec2{0.5F, 0.5F});
-            if (ImGui::Button("Create New Plugin", ImVec2{60.0F, 30.0F}))
+            ImGui::SetCursorPos(ImVec2{mainWinSize.x * 0.5F, mainWinSize.y * 0.5F});
+            if (ImGui::Button("Create New Plugin", ImVec2{200.0F, 49.0F}))
             {
+                  wizardWindow.wizardPlugin();
             }
       }
       ImGui::SetCursorPos(ImVec2{mainWinSize.x / 2.0F, mainWinSize.y / 2.0F});
 
+      ImGui::PopStyleColor(2);
+      ImGui::PopStyleVar();
       ImGui::End();
 }
 

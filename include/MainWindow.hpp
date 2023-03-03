@@ -9,6 +9,7 @@
 #include "FileManager.hpp"
 #include "Project.hpp"
 #include "Plugin.hpp"
+#include "WizardWindow.hpp"
 
 namespace GUIPLUG
 {
@@ -24,6 +25,7 @@ namespace GUIPLUG
             void placeContent(ImGuiViewport *viewPort, ImFont &mainFont24px);
 
             bool isNewProject{false}; // To detect if project is opened from file or is newly created.
+
       private:
             ImVec2 mainWinPosition{0.0F, 0.0F};
             ImVec2 mainWinSize{0.0F, 0.0F};
@@ -32,6 +34,7 @@ namespace GUIPLUG
             Project project{};
             Plugin plugin{};
 
+            WizardWindow wizardWindow{};
             // SkiaHandler skiaHandler{};
 
             nlohmann::json projectProperties{};
