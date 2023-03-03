@@ -1,6 +1,8 @@
 # GuiPlug
 
-Musical instrument and fx plugin maker
+Musical instrument and fx plugin maker 
+- current state:  *in **Development***
+
 
 ## Directories and files
 
@@ -31,16 +33,18 @@ For VS code build task add this, or modify it for your setup, in **tasks.json**:
 
 ```
 {
+      "label": "Meson: Build target",
       "type": "meson",
       "target": "a",
       "mode": "build",
-      "problemMatcher": [ "$meson-gcc" ],
+      "problemMatcher": [
+            "$meson-gcc"
+      ],
       "group": {
-      "kind": "build",
-      "isDefault": true
+            "kind": "build",
+            "isDefault": true
       },
-      "label": "Meson: Build a"
-},
+}
 ```
 
 ### launch.json
