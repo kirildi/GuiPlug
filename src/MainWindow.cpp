@@ -148,13 +148,22 @@ void GUIPLUG::MainWindow::placeEditor(ImGuiViewport *viewPort)
       ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2{0.12F, 0.5F});
       ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.16F, 0.16F, 0.16F, 1.0F}); // All buttons in following table
       ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{0.25F, 0.25F, 0.25F, 1.0F});
-      if (isNewProject)
+      if (!isNewProject) // TODO do not forget to return it to true
       {
             ImGui::SetCursorPos(ImVec2{mainWinSize.x * 0.5F, mainWinSize.y * 0.5F});
+            std::string popUpName{"Create New Plugin"};
+
             if (ImGui::Button("Create New Plugin", ImVec2{200.0F, 49.0F}))
             {
-                  wizardWindow.wizardPlugin();
+                  ImGui::OpenPopup(popUpName.c_str(), ImGuiPopupFlags_None);
             }
+
+            if (ImGui::BeginPopupModal(popUpName.c_str(), NULL,
+                                       ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+            {
+                  wizardWindow.showWizard("wzPlugin");
+                  ImGui::EndPopup();
+            };
       }
       ImGui::SetCursorPos(ImVec2{mainWinSize.x / 2.0F, mainWinSize.y / 2.0F});
 

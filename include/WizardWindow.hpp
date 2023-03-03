@@ -19,13 +19,6 @@ namespace GUIPLUG
 
             bool showWizard(const std::string &wizardWindowId);
 
-            /* loads New Project form/fields inside modal */
-            bool wizardProject();
-
-            /* Loads New Plugin form/fields inside modal */
-            bool wizardPlugin();
-
-            bool wizardResult{false};
             bool isProjectExist{false};
 
       private:
@@ -40,6 +33,12 @@ namespace GUIPLUG
             ImGuiViewport *viewPort{nullptr};
             ImVec2 wizardStartPos{0.0F, 0.0F};
             ImVec2 wizardDimensions{0.0F, 0.0F};
+
+            /* loads New Project form/fields inside modal */
+            bool wizardProject();
+
+            /* Loads New Plugin form/fields inside modal */
+            bool wizardPlugin();
 
             void fillForNewProject();
 
