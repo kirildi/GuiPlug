@@ -17,9 +17,9 @@ bool GUIPLUG::WizardWindow::showWizard(const std::string &wizardWindowId)
       ImGui::SetNextWindowBgAlpha(1.0F);
 
       if (wizardWindowId != "wzProject")
-            wizardPlugin();
-
-      wizardResult = wizardProject();
+            wizardResult = wizardPlugin();
+      else
+            wizardResult = wizardProject();
 
       return wizardResult;
 }
@@ -99,13 +99,14 @@ bool GUIPLUG::WizardWindow::wizardProject()
       if (isDoneClicked)
       {
             project.projectPlatform = current_platform;
-            project.projectLocation = projectRootDir + project.projectName + "\\";
+            project.projectLocation = projectRootDir + project.projectName + "\\" + project.projectName + project.fileExtension;
+            openProjectPath = project.projectLocation;
 
-            isProjectExist = fileManager.fileExist(project.projectLocation + project.projectName + project.fileExtension);
+            isProjectExist = fileManager.fileExist(openProjectPath);
             if (!isProjectExist)
             {
                   fillForNewProject(); // stores input data before create
-                  std::filesystem::path dir{project.projectLocation};
+                  std::filesystem::path dir{projectRootDir + project.projectName + "\\"};
 
                   if (fileManager.createDirectory(dir))
                   {
@@ -150,69 +151,68 @@ bool GUIPLUG::WizardWindow::wizardProject()
 
 bool GUIPLUG::WizardWindow::wizardPlugin()
 {
-      // Always center this window when appearing
-      ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-      ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2{0.5f, 0.5f});
+      ImGui::Dummy(ImVec2{0.0F, 3.0F});
+      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{5.0F, 5.0F});
+      ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{0.0F, 12.0F});
+      ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2{0.0F, 14.0F});
+      ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{6.0F, 5.0F});
+      ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2{0.5f, 0.5f});
 
-      if (ImGui::BeginPopupModal("##new_plugin_modal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+      ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.25F, 0.25F, 0.25F, 1.0F));
+
+      ImGui::BeginGroup();
+
+      ImGui::LabelText("", "Rendering platform: ");
+      const char *items[] = {"SKIA", "OpenGL3", "Cairo_graphics"};
+      static const char *item_current = items[0];
+      if (ImGui::BeginCombo("##render_select", item_current))
       {
-
-            /* Heading */
-            ImGui::LabelText("##big_heading_text", "New Plugin Setup");
-
-            ImGui::Dummy(ImVec2{0.0f, 14.0f});
-
-            /* Wizard TabBar */
-            ImGui::BeginTabBar("##wizard_tabbar");
-
-            if (ImGui::BeginTabItem("Render"))
+            for (int n = 0; n < IM_ARRAYSIZE(items); n++)
             {
-                  // Render platform selection
-                  ImGui::BeginGroup();
-                  ImGui::LabelText("", "Rendering platform: ");
-                  const char *items[] = {"SKIA", "OpenGL3", "Cairo_graphics"};
-                  static const char *item_current = items[0];
-                  if (ImGui::BeginCombo("##render_select", item_current)) // The second parameter is the label previewed.
-                  {
-                        for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-                        {
-                              bool is_selected = (item_current == items[n]);
-                              if (ImGui::Selectable(items[n], is_selected))
-                                    item_current = items[n];
-                              if (is_selected)
-                                    ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
-                        }
-                        ImGui::EndCombo();
-                  }
-                  ImGui::EndGroup();
-
-                  ImGui::EndTabItem();
+                  bool is_selected = (item_current == items[n]);
+                  if (ImGui::Selectable(items[n], is_selected))
+                        item_current = items[n];
+                  if (is_selected)
+                        ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
             }
-            if (ImGui::BeginTabItem("Plugin"))
-            {
-                  // Plugin platform selection
-                  ImGui::BeginGroup();
-                  ImGui::LabelText("##plugin_section", "Plugin: ");
-
-                  static char plugin_name[128] = "";
-                  ImGui::InputTextWithHint("##plugin_name", "Plugin name...", plugin_name, IM_ARRAYSIZE(plugin_name));
-                  static char creator_name[128] = "";
-                  ImGui::InputTextWithHint("##creator_name", "Creator name...", creator_name, IM_ARRAYSIZE(creator_name));
-
-                  static int e = 0;
-                  ImGui::RadioButton("VST3", &e, 0);
-                  ImGui::SameLine();
-                  ImGui::RadioButton("AU", &e, 1);
-                  ImGui::SameLine();
-                  ImGui::RadioButton("LV2", &e, 2);
-
-                  ImGui::EndGroup();
-                  ImGui::EndTabItem();
-            }
-
-            ImGui::EndTabBar();
-            ImGui::EndPopup();
+            ImGui::EndCombo();
       }
+
+      ImGui::EndGroup();
+
+      // Plugin platform selection
+      ImGui::BeginGroup();
+      ImGui::LabelText("##plugin_section", "Plugin: ");
+
+      static char plugin_name[128] = "";
+      ImGui::InputTextWithHint("##plugin_name", "Plugin name...", plugin_name, IM_ARRAYSIZE(plugin_name));
+      static char creator_name[128] = "";
+      ImGui::InputTextWithHint("##creator_name", "Creator name...", creator_name, IM_ARRAYSIZE(creator_name));
+
+      static int e = 0;
+      ImGui::RadioButton("VST3", &e, 0);
+      ImGui::SameLine();
+      ImGui::RadioButton("AU", &e, 1);
+      ImGui::SameLine();
+      ImGui::RadioButton("LV2", &e, 2);
+      ImGui::EndGroup();
+
+      ImGui::PopStyleColor();
+      ImGui::PopStyleVar(5);
+
+      // Place confirmation buttons
+      ImGui::Dummy(ImVec2{0.0F, 12.0F});
+      wizardButtons();
+      if (isDoneClicked)
+      {
+            plugin.pluginRenderer = item_current;
+            plugin.pluginName = plugin_name;
+            plugin.pluginCreator = creator_name;
+            fillForNewPlugin();
+            project.projectLocation = openProjectPath;
+            project.save();
+      }
+
       return false;
 };
 
@@ -225,6 +225,13 @@ void GUIPLUG::WizardWindow::fillForNewProject()
       project.projectHeader["header"]["projectDateCreated"] = currentDateTime();
 };
 
+void GUIPLUG::WizardWindow::fillForNewPlugin()
+{
+      project.projectPlugin["plugin"]["pluginRenderer"] = plugin.pluginRenderer;
+      project.projectPlugin["plugin"]["pluginName"] = plugin.pluginName;
+      project.projectPlugin["plugin"]["pluginCreator"] = plugin.pluginCreator;
+}
+
 void GUIPLUG::WizardWindow::wizardButtons()
 {
       ImGui::Dummy(ImVec2{0.0F, 12.0F});
@@ -232,7 +239,10 @@ void GUIPLUG::WizardWindow::wizardButtons()
 
       ImGui::BeginGroup();
       if (ImGui::Button("Done", ImVec2{100.0F, 32.0F}))
+      {
             isDoneClicked = true;
+            ImGui::CloseCurrentPopup();
+      }
 
       ImGui::SameLine(0, 12.0F);
 

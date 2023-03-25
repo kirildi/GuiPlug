@@ -6,6 +6,7 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_stdlib.h"
 #include "Project.hpp"
+#include "Plugin.hpp"
 
 #include "portable-file-dialogs.h"
 
@@ -27,6 +28,7 @@ namespace GUIPLUG
 
             bool wizardResult{false};
             bool isProjectExist{false};
+            std::string openProjectPath{};
 
       private:
             bool isDoneClicked{false};
@@ -35,6 +37,7 @@ namespace GUIPLUG
             std::string projectRootDir{std::filesystem::current_path().string() + "\\Projects\\"};
 
             Project project{};
+            Plugin plugin{};
             FileManager fileManager{};
 
             ImGuiViewport *viewPort{nullptr};
@@ -42,6 +45,7 @@ namespace GUIPLUG
             ImVec2 wizardDimensions{0.0F, 0.0F};
 
             void fillForNewProject();
+            void fillForNewPlugin();
 
             void wizardButtons();
       };

@@ -74,8 +74,9 @@ bool GUIPLUG::PlatformWindow::showContent(std::string windowId)
             if (windowId == "main")
             {
                   windowSelector = WindowSelector::MAIN_WINDOW;
-                  mainWindow.openProjectPath = managerWindow.openExistingPath;
+                  mainWindow.openProjectPath = managerWindow.openProjectPath;
                   mainWindow.isNewProject = managerWindow.isNewProject;
+
                   mainWindow.placeContent(viewPort, *mainFont24px);
             }
             // Rendering

@@ -17,6 +17,10 @@ namespace GUIPLUG
             Plugin();
             ~Plugin();
 
+            std::string pluginRenderer{};
+            std::string pluginName{};
+            std::string pluginCreator{};
+
       private:
             std::fstream fileManager{};
       };

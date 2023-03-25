@@ -61,7 +61,7 @@ void GUIPLUG::ManagerWindow::placeContent(ImGuiViewport *viewPort, ImFont &mainF
                   }
                   else
                   {
-                        openExistingPath = openExisting[0];
+                        openProjectPath = openExisting[0];
                         openNewProj = true;
                         isNewProject = false;
                   }
@@ -84,6 +84,8 @@ void GUIPLUG::ManagerWindow::placeContent(ImGuiViewport *viewPort, ImFont &mainF
             wizardWindow.showWizard("wzProject");
             if (wizardWindow.wizardResult)
             {
+                  openProjectPath = wizardWindow.openProjectPath;
+
                   openNewProj = true;
                   isNewProject = true;
             }

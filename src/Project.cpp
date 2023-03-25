@@ -26,7 +26,7 @@ bool GUIPLUG::Project::save()
       if (!projectMisc.empty())
             projectStructure.update(projectMisc, true);
 
-      return (fileManager.fileSave(projectLocation + projectName + fileExtension, projectStructure)) ? true : false;
+      return (fileManager.fileSave(projectLocation, projectStructure)) ? true : false;
 }
 
 bool GUIPLUG::Project::save(const std::string &pathToSave, const nlohmann::json &projectStructure)

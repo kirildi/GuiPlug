@@ -20,7 +20,7 @@ namespace GUIPLUG
 
             void placeContent(ImGuiViewport *viewPort, ImFont &mainFont24px, ImFont &mainFont42px);
 
-            std::string openExistingPath{""};
+            std::string openProjectPath{""};
             bool openNewProj{false};
             bool isNewProject{false}; // To detect if project is opened from file or is newly created.
 
