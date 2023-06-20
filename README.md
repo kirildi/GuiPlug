@@ -1,8 +1,11 @@
 # GuiPlug
 
-Musical instrument and fx plugin maker 
-- current state:  *in **Development***
+***Important Notice***: Project is currently on HALT state, as I'm testing a clone of it on another stack/framework.
+If I get better performance and workflow with the other framework, project will remain only for some references.
+Otherwise I will continue to work on the project
 
+Musical instrument and fx plugin maker 
+- current state: *on **HALT***
 
 ## Directories and files
 
@@ -25,6 +28,12 @@ Musical instrument and fx plugin maker
 
 _Quote: lib contains glfw3.dll, which is required by the .exe. For now you can copy it from here while developing_
 
+
+What's done:
+- new project can be created from button, inside manager window
+- existing project can be opened from a dialog window, where the file is allowed to be serched trough folders
+- custom project file in JSON format is created on save
+- various configurations and lib setups
 ## VS Code configs (windows)
 
 ### tasks.json
